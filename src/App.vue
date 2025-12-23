@@ -1,28 +1,38 @@
 <template>
-
   <div class="min-h-screen bg-background font-sans antialiased text-foreground">
-    <!-- NavBar Component -->
-    <NavBar
-      :is-logged-in="isLoggedIn"
-      :username="username"
-      @login="showLoginModal = true"
-      @logout="logout"
-    />
+    <el-container>
+      <el-header>
+        <NavBar
+          :is-logged-in="isLoggedIn"
+          :username="username"
+          @login="showLoginModal = true"
+          @logout="logout"
+        />
+      </el-header>
 
-    <!-- Main Content -->
-    <main>
-      <BlogFeed
-        :is-logged-in="isLoggedIn"
-        :current-user="username"
-        @require-login="showLoginModal = true"
-      />
-    </main>
+      <el-main>
+        <main>
+          <BlogFeed
+            :is-logged-in="isLoggedIn"
+            :current-user="username"
+            @require-login="showLoginModal = true"
+          /></main
+      ></el-main>
 
-    <!-- Simple Login Modal -->
-    <div v-if="showLoginModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+      <el-footer>
+      </el-footer
+      >
+
+    </el-container>
+    <div
+      v-if="showLoginModal"
+      class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+    >
       <div class="w-full max-w-sm rounded-xl border bg-card p-6 shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Login</h2>
-        <p class="text-muted-foreground mb-6">Enter your username to start posting and interacting.</p>
+        <p class="text-muted-foreground mb-6">
+          Enter your username to start posting and interacting.
+        </p>
         <input
           v-model="loginInput"
           placeholder="Username"
@@ -30,10 +40,16 @@
           @keyup.enter="login"
         />
         <div class="flex gap-3">
-          <button @click="showLoginModal = false" class="flex-1 h-10 rounded-md border hover:bg-accent transition-colors">
+          <button
+            @click="showLoginModal = false"
+            class="flex-1 h-10 rounded-md border hover:bg-accent transition-colors"
+          >
             Cancel
           </button>
-          <button @click="login" class="flex-1 h-10 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+          <button
+            @click="login"
+            class="flex-1 h-10 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
             Login
           </button>
         </div>
@@ -43,26 +59,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import NavBar from './components/NavBar.vue'
-import BlogFeed from './components/BlogFeed.vue'
+import { ref } from "vue";
+import NavBar from "./components/NavBar.vue";
+import BlogFeed from "./components/BlogFeed.vue";
 
-const isLoggedIn = ref(false)
-const username = ref('')
-const loginInput = ref('')
-const showLoginModal = ref(false)
+const isLoggedIn = ref(false);
+const username = ref("");
+const loginInput = ref("");
+const showLoginModal = ref(false);
+
 
 const login = () => {
   if (loginInput.value.trim()) {
-    isLoggedIn.value = true
-    username.value = loginInput.value
-    showLoginModal.value = false
-    loginInput.value = ''
+    isLoggedIn.value = true;
+    username.value = loginInput.value;
+    showLoginModal.value = false;
+    loginInput.value = "";
   }
-}
+};
 
 const logout = () => {
-  isLoggedIn.value = false
-  username.value = ''
-}
+  isLoggedIn.value = false;
+  username.value = "";
+};
+
+
 </script>

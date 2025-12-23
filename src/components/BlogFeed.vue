@@ -1,38 +1,6 @@
 <template>
   <div class="mx-auto max-w-2xl py-8 px-4">
-    <!-- Post Creation Card -->
-    <div v-if="isLoggedIn" class="mb-8 rounded-xl border bg-card p-4 shadow-sm">
-      <textarea
-        v-model="newPostContent"
-        placeholder="What's on your mind?"
-        class="w-full resize-none border-none bg-transparent p-0 focus:ring-0 text-lg"
-        rows="3"
-      ></textarea>
 
-      <!-- Image Preview -->
-      <div v-if="selectedImages.length > 0" class="mt-4 grid grid-cols-3 gap-2">
-        <div v-for="(img, index) in selectedImages" :key="index" class="relative aspect-square overflow-hidden rounded-lg">
-          <img :src="img" class="h-full w-full object-cover" />
-          <button @click="removeImage(index)" class="absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white hover:bg-black/70">
-            <XIcon :size="14" />
-          </button>
-        </div>
-      </div>
-
-      <div class="mt-4 flex items-center justify-between border-t pt-4">
-        <label class="cursor-pointer rounded-md p-2 hover:bg-accent">
-          <ImageIcon class="text-muted-foreground" :size="20" />
-          <input type="file" class="hidden" multiple accept="image/*" @change="handleImageUpload" />
-        </label>
-        <button
-          @click="submitPost"
-          :disabled="!newPostContent.trim() && selectedImages.length === 0"
-          class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 disabled:opacity-50"
-        >
-          Post
-        </button>
-      </div>
-    </div>
 
     <!-- Feed -->
     <div class="space-y-6">
@@ -85,14 +53,66 @@
             </div>
           </div>
         </div>
+        </div>
+      <!-- Post Creation Card -->
+        <div
+          v-if="isLoggedIn"
+           class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-10"
+        >
+          <textarea
+            v-model="newPostContent"
+            placeholder="What's on your mind?"
+            class="w-full resize-none border-none bg-transparent p-0 focus:ring-0 text-lg"
+            rows="3"
+          ></textarea>
+
+          <!-- Image Preview -->
+          <div
+            v-if="selectedImages.length > 0"
+            class="mt-4 grid grid-cols-3 gap-2"
+          >
+            <div
+              v-for="(img, index) in selectedImages"
+              :key="index"
+              class="relative aspect-square overflow-hidden rounded-lg"
+            >
+              <img :src="img" class="h-full w-full object-cover" />
+              <button
+                @click="removeImage(index)"
+                class="absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white hover:bg-black/70"
+              >
+                <XIcon :size="14" />
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between border-t pt-4">
+            <label class="cursor-pointer rounded-md p-2 hover:bg-accent">
+              <ImageIcon class="text-muted-foreground" :size="20" />
+              <input
+                type="file"
+                class="hidden"
+                multiple
+                accept="image/*"
+                @change="handleImageUpload"
+              />
+            </label>
+            <button
+              @click="submitPost"
+              :disabled="!newPostContent.trim() && selectedImages.length === 0"
+              class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 disabled:opacity-50"
+            >
+              Post
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { HeartIcon, MessageCircleIcon, ImageIcon, XIcon } from 'lucide-vue-next'
+import { HeartIcon, MessageCircleIcon,ImageIcon, XIcon} from 'lucide-vue-next'
 const props = defineProps({
   isLoggedIn: Boolean,
   currentUser: String
@@ -106,22 +126,22 @@ const selectedImages = ref([])
 const posts = ref([
   {
     id: 1,
-    author: 'Design Lover',
-    content: 'Loving the clean design of this new blog! ✨ #WebDev #UI',
-    timestamp: '2 hours ago',
-    images: ['/placeholder.svg?height=400&width=600'],
+    author: '猫,养猫日记',
+    content: '这是我的小猫! ✨ #WebDev #UI',
+    timestamp: '5 小 时 前',
+    images: ['https://p0.ssl.qhimgs1.com/t01db7e1b42051f8286.jpg'],
     likes: 12,
     liked: false,
-    comments: [{ id: 1, user: 'DevGuy', text: 'Looks awesome!' }],
+    comments: [{ id: 1, user: 'DevGuy', text: '看起来好可爱!' }],
     showComments: false,
     newComment: ''
   },
   {
     id: 2,
-    author: 'Traveler',
-    content: 'Just arrived in Kyoto. The view is breath-taking.',
-    timestamp: '5 hours ago',
-    images: ['/placeholder.svg?height=400&width=600', '/placeholder.svg?height=400&width=600'],
+    author: '狗,养狗日记',
+    content: '我还养了两只狗.',
+    timestamp: '2 小 时 前',
+    images: ['https://p1.ssl.qhimgs1.com/t01a6e7180e652a18b7.jpg', 'https://p0.ssl.qhimgs1.com/t0166ae7b5d6b7f8faa.jpg'],
     likes: 45,
     liked: true,
     comments: [],
@@ -129,6 +149,27 @@ const posts = ref([
     newComment: ''
   }
 ])
+const handleLike = (post) => {
+  if (!props.isLoggedIn) return emit('require-login')
+  post.liked = !post.liked
+  post.likes += post.liked ? 1 : -1
+}
+
+const toggleComments = (post) => {
+  post.showComments = !post.showComments
+}
+
+const addComment = (post) => {
+  if (!props.isLoggedIn) return emit('require-login')
+  if (!post.newComment.trim()) return
+
+  post.comments.push({
+    id: Date.now(),
+    user: props.currentUser,
+    text: post.newComment
+  })
+  post.newComment = ''
+}
 
 const handleImageUpload = (e) => {
   const files = Array.from(e.target.files)
@@ -166,25 +207,4 @@ const submitPost = () => {
   selectedImages.value = []
 }
 
-const handleLike = (post) => {
-  if (!props.isLoggedIn) return emit('require-login')
-  post.liked = !post.liked
-  post.likes += post.liked ? 1 : -1
-}
-
-const toggleComments = (post) => {
-  post.showComments = !post.showComments
-}
-
-const addComment = (post) => {
-  if (!props.isLoggedIn) return emit('require-login')
-  if (!post.newComment.trim()) return
-
-  post.comments.push({
-    id: Date.now(),
-    user: props.currentUser,
-    text: post.newComment
-  })
-  post.newComment = ''
-}
 </script>
