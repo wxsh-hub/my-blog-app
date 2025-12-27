@@ -12,7 +12,7 @@
 
       <el-main>
         <main>
-          <BlogFeed
+          <BlogFeed2
             :is-logged-in="isLoggedIn"
             :current-user="username"
             @require-login="showLoginModal = true"
@@ -61,7 +61,8 @@
 <script setup>
 import { ref } from "vue";
 import NavBar from "./components/NavBar.vue";
-import BlogFeed from "./components/BlogFeed.vue";
+//import BlogFeed from "./components/BlogFeed.vue";
+import BlogFeed2 from "./components/BlogFeed2.vue";
 
 const isLoggedIn = ref(false);
 const username = ref("");

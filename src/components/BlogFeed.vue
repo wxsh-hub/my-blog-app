@@ -61,7 +61,7 @@
         >
           <textarea
             v-model="newPostContent"
-            placeholder="What's on your mind?"
+            placeholder="说些什么吧?"
             class="w-full resize-none border-none bg-transparent p-0 focus:ring-0 text-lg"
             rows="3"
           ></textarea>
